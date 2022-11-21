@@ -1,7 +1,7 @@
 # Sequence processing pipeline
 Here is a summary of the pipeline used to process the sequences. The pipeline is based on the ["alternative vsearch pipeline"](https://github.com/torognes/vsearch/wiki/Alternative-VSEARCH-pipeline) proposed by Torbjørn Rognes. This pipeline is based on the approach that usearch uses. In short, after quality filtering, OTUs at 97% are produced from all sequences except the singleton sequences. Then, these OTUs are checked for chimeras. Finally, all original sequences (including singletons) are mapped to these created OTUs using the 97% similarity threshold.
 
-In steps 1-4, the samples are being processed separately, before being pooled at step 5. So steps 1-4 are run through a for loop that iterates over all files. Furthermore, we strongly suggest to consistently check the amount of reads remaining after each step... there can be some surprises!
+In steps 1-4, the samples are being processed separately, so we use a for loop that iterates over all files for these steps. Furthermore, we strongly suggest to consistently check the amount of reads remaining after each step... there can be some surprises!
 
 The following software/packages are needed to run the pipeline:
 - [cutadapt](https://cutadapt.readthedocs.io/en/stable/)
