@@ -9,7 +9,7 @@ The following software/packages are needed to run the pipeline:
 - [blastn](https://www.ncbi.nlm.nih.gov/books/NBK569861/)
 - [LULU](https://github.com/tobiasgf/lulu)
 - [CREST4](https://github.com/tobiasgf/lulu)
-- You will also need a copy of the SILVA 138 nr database if yo uwant to run the chimera check against it.
+- You will also need a copy of the SILVA 138 nr database if you want to run the chimera check against it.
 
 ### 1. Removal of the forward primers.
 When we receive our sequences back, they are already demultiplexed, meaning that each sample has its own fastq file, and the adaptors and barcodes are already removed. However, the forward primer is still present. We want to remove it, as it does not contain any phylogenic information. We use the cutadapt tool. 
