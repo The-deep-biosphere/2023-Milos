@@ -1,5 +1,8 @@
 # Sequence processing pipeline
-Here is a summary of the pipeline with the main points and explanations. Note that the real script is differently written, mainly because each step is being iterated over all samples. See the `pipeline.sh` file. The pipeline is based on the "alternative vsearch pipeline" proposed by [Torbjørn Rognes](https://github.com/torognes/vsearch/wiki/Alternative-VSEARCH-pipeline).
+Here is a summary of the pipeline used to process the sequences. The pipeline is based on the ["alternative vsearch pipeline"](https://github.com/torognes/vsearch/wiki/Alternative-VSEARCH-pipeline) proposed by Torbjørn Rognes.
+
+First, the samples are being processed separately, before pooling
+
 
 ### Removal of the forward primers.
 When we receive our sequences back, they are already demultiplexed, meaning that each sample has its own fastq file, and the adaptors and barcodes are already removed. However, the forward primer is still present. It is accepted that this part should be removed. Indeed, it does not contain any phylogenic information as all sequences are same for this part. We use the cutadapt tool. 
