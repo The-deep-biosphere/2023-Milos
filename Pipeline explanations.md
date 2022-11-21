@@ -1,7 +1,15 @@
 # Sequence processing pipeline
-Here is a summary of the pipeline used to process the sequences. The pipeline is based on the ["alternative vsearch pipeline"](https://github.com/torognes/vsearch/wiki/Alternative-VSEARCH-pipeline) proposed by Torbjørn Rognes.
+Here is a summary of the pipeline used to process the sequences. The pipeline is based on the ["alternative vsearch pipeline"](https://github.com/torognes/vsearch/wiki/Alternative-VSEARCH-pipeline) proposed by Torbjørn Rognes. This pipeline is based on the approach that usearch uses. In short, after quality filtering, OTUs at 97% are produced from all sequences except the singleton sequences. Then, these OTUs are checked for chimeras. Finally, all original sequences (including singletons) are mapped to these created OTUs using the 97% similarity threshold.
 
-First, the samples are being processed separately, before pooling after the first dereplication (step 5). So each step prior to this is run through a for loop that iterates over all files. 
+In steps 1-4, the samples are being processed separately, before being pooled at step 5. So steps 1-4 are run through a for loop that iterates over all files. Furthermore, we strongly suggest to consistently check the amount of reads remaining after each step... there can be some surprises!
+
+The following software/packages are needed to run the pipeline:
+- [cutadapt](https://cutadapt.readthedocs.io/en/stable/)
+- [vsearch](https://github.com/torognes/vsearch)
+- [blastn](https://www.ncbi.nlm.nih.gov/books/NBK569861/)
+- [LULU](https://github.com/tobiasgf/lulu)
+- [CREST4](https://github.com/tobiasgf/lulu)
+- You will also need a copy of the SILVA 138 nr database if yo uwant to run the chimera check against it.
 
 ### 1. Removal of the forward primers.
 When we receive our sequences back, they are already demultiplexed, meaning that each sample has its own fastq file, and the adaptors and barcodes are already removed. However, the forward primer is still present. We want to remove it, as it does not contain any phylogenic information. We use the cutadapt tool. 
@@ -16,7 +24,7 @@ cutadapt -j 10 -g CAGCMGCCGCGGTAA --no-indels --discard-untrimmed -o $s.noprimer
 - `$f`:  This is the input file.
 
 ### 2. Trim at 220bp
-The sequences that we get back from sequencing are decreasing in quality towards the end. This means the certainty of a given base pair becomes lower, and there are more errors. To use only the certain part of each sequence, we discard the end of them. We choose to trim at 220bp here. This is arbitrary, but decided after observing the quality of our sequences in a tool like FastQC. To trim our sequences, we use a command within the `vsearch` software. At the same time this will remove our sequences shorter than 220bp.
+The sequences that we get back from sequencing are decreasing in quality towards the end (We checked this using FastQC). Therefore we decide to trim our sequences at 220bp. To trim our sequences, we use the `--fastq_filter` command within the vsearch software. At the same time this will remove the sequences shorter than 220bp.
 ```bash
 vsearch --fastq_filter $f \
 	--fastq_maxns 0 \
@@ -24,12 +32,12 @@ vsearch --fastq_filter $f \
 	--fastqout $s.trimmed.fastq
 ```
 - `--fastq_filter`: Name of the input fastq file to be filtered.
-- `--fastq_maxns`: Discard sequences with more than zero N's. N's are unknown base pairs.
+- `--fastq_maxns`: Discard sequences with more than zero Ns. N's are unknown base pairs.
 - `--fastq_trunclen`: Trim the sequences at 220bp. Throw away the shorter ones.
 - `--fastqout`: The name of the output file.
 
-### Quality filtering
-Fastq files contains both the sequences and the quality information related to each base pair. There are many ways to filter your sequences based on the quality. Here we use the max expected error principle, setting it to 2. That means the quality of our sequences allow us to expect no more than 2 errors in each sequence. Considering that we will later cluster our sequence at 97% similarity, 2 errors over 220bp should not make a major difference. Again, we use `vsearch`.
+### 3. Quality filtering
+Fastq files contains both the sequences and the quality information related to each base pair. There are many ways to filter your sequences based on the quality. Here we use the max expected error principle, setting it to 2 for the Ion Torrent files, and 1 for the Illumina files. That means the quality of our sequences allow us to expect no more than 2 (or 1) errors in each sequence. Considering that we will later cluster our sequence at 97% similarity, 2 errors over 220bp should not make a major difference. Again, we use vsearch.
 ```bash
 vsearch --fastq_filter $f \
 	--relabel $s. \
@@ -43,8 +51,8 @@ vsearch --fastq_filter $f \
 - `--fastaout:` The name of the output fasta file.
 - `--fasta_width`: The layout of the fasta file. Using 0, the sequence is written fully on one line.
 
-### Dereplicate
-We now have fasta files, meaning that only the sequences are present in the file, no more the quality information. We anyway do not need it anymore... Now we gonna dereplicate each files. This means that we gonna fuse together sequences that are 100% same. The aim is to decrease the size of the file, and therefore alleviate the computer power needed to process the data.
+### 4. Dereplicate
+We now have fasta files and are ready to dereplicate each file. This means that we gonna fuse together sequences that are 100% same. The aim is to decrease the size of the file, and therefore alleviate the computer power needed to process the data.
 ```bash 
 vsearch --derep_fulllength $f \
 --strand plus \
@@ -57,19 +65,16 @@ vsearch --derep_fulllength $f \
 - `--strand`: Do we want to compare only the same plus strand, or also the reverse complement? 
 - `--sizeout`: Add the amount of time this sequence is present in the name of the sequence.
 - `--relabel`: Relabel the name of the sequences within each file.
-- `--fasta_width`: The layout of the fasta file. Using 0, the sequence is written fully on one line.
+- `--fasta_width`: The layout of the fasta file. Using 0, each sequence is written fully on one line.
 - `--output`: Name of the output file.
 
-### Concatenate files
-At this point we are done with the analysis of each sample separately. We can therefore concatenate all files together. This uses the `cat` command from Unix. It takes all the dfa files in the directory and pool them together into a new file.
+### 5. Concatenate files
+At this point we are done with the processing of each sample separately. We can therefore concatenate all files together. This uses the `cat` command from Unix. It takes all the dfa files in the directory and pool them together into a new file. Make sure that you did not have other dfa files hanging in your directory.
 ```bash
 cat *.dfa > AllSeqs.fa
 ```
 
-### Plan from here
-The "alternative vsearch pipeline" that we use here is based on the approach that usearch uses. In short, OTUs at 97% are produced from all sequences except the singleton sequences. Then, these OTUs are checked for chimeras. Finally, all original sequences (including singletons) are mapped to these created OTUs using the threshold of  97% similarity.
-
-### Dereplicate again
+### 6. Dereplicate again
 Now that we have pooled all sequences together, there are likely some replicates again. Therefore we can dereplicate once more.
 ```bash
 vsearch --derep_fulllength AllSeqs.fa \
@@ -82,7 +87,7 @@ vsearch --derep_fulllength AllSeqs.fa \
 - `--minuniquesize`: The minimum of amount a sequence need to be present to be kept. Here we do not want to keep the singletons, so we use 2.
 - `--sizein`: To say that there is quantity information already in the name of each sequence.
 
-### Cluster at 97%
+### 7. Cluster at 97%
 Now we can pool together sequences that are 97% similar into OTUs. While using raw sequences is a possibility, it adds some noise and computer power needs. 97% is a commonly used threshold.
 ```bash
 vsearch --cluster_size AllSeqs.derep.fasta \
@@ -95,9 +100,9 @@ vsearch --cluster_size AllSeqs.derep.fasta \
 ```
 - `--cluster_size`: What we want to do, cluster sequences.
 - `--id`: The similarity that we want to use as a threshold, 97%.
-- `--centroids`: The name of the output, a fasta files containing a fake centroid sequence for each OTU.
+- `--centroids`: The name of the output, a fasta files containing a centroid sequence for each OTU.
 
-### Sort centroids by size
+### 8. Sort centroids by size
 Before looking for chimera, we need to organise our centroids by size (quantity).
 ```bash
 vsearch --sortbysize Centroids.fasta \
@@ -108,7 +113,7 @@ vsearch --sortbysize Centroids.fasta \
 ```
 - `--sortbysize`: The input file to be sorted.
 
-### Look for chimeras.
+### 9. Look for chimeras.
 Chimeras are artificial products of PCR amplification. We can look for them within the dataset (the algorithm looks for sequences made of several other sequences), or against a dataset (the algorithm looks for sequences made of several sequences from this dataset). Here we run both.
 ``` bash
 vsearch --uchime_denovo Centroids.sorted.fasta \
@@ -133,7 +138,7 @@ vsearch --uchime_ref Centroids.denovo.nonchimeras.fasta \
 - `--db`: The database to be used. Here we use SILVA138.
 - `--dbmmask`: Like `--qmask`, but for the database
 
-### Relabel OTUs as OTU_xxx
+### 10. Relabel OTUs as OTU_xxx
 That is just for simplicity...
 ``` bash
 vsearch --fastx_filter Centroids.nonchimeras.fasta \
@@ -143,8 +148,8 @@ vsearch --fastx_filter Centroids.nonchimeras.fasta \
 --fastaout Otus.fasta
 ```
 
-### Map OTUs
-Now that we have a clean set of OTUs without chimeras, we can map our original sequences (just after the `cat` command) to them, and get our OTU table.
+### 11. Map OTUs
+Now that we have a clean set of OTUs without chimeras, we can map our original sequences (produced at step 5) to them, and get our OTU table.
 ``` bash
 vsearch --usearch_global AllSeqs.fa \
 --db Otus.fasta \
@@ -159,8 +164,8 @@ vsearch --usearch_global AllSeqs.fa \
 ```
 - `--otutabout`: The name of the output.
 
-### Clean with Lulu
-We do one extra step of cleaning here, using the [Lulu](https://github.com/tobiasgf/lulu) algorithm. The software pools together OTUs that it believes are the results of sequencing errors.
+### 12. Clean with Lulu
+We do one extra step of cleaning here, using the [LULU](https://github.com/tobiasgf/lulu) algorithm. The software pools together OTUs that it believes are the results of sequencing errors.
 First one need to produce a database using `makebalstdb`, and then blast our fasta file against itself using `blastn`.
 ``` bash
 makeblastdb -in Otus.fasta -dbtype nucl
@@ -177,6 +182,8 @@ blastn -db Otus.fasta -outfmt '6 qseqid sseqid pident' \
 - `-perc_identity`: The similarity percentage needed.
 - `-query`: Our fasta file.
 - `-num_threads`: Amount of CPUs to use.
+
+We then use the following R code. The file should be saved in the same directory.
 ``` R
 setwd(".")
 require(lulu)
@@ -188,7 +195,8 @@ curated_result <- lulu(otus.all,matchlist, minimum_match = 97)
 lulus = curated_result$curated_table
 write.table(data.frame("OTU"=rownames(lulus),lulus),"Otutab_curated.tsv", row.names=FALSE, quote=F, sep="\t")
 ```
-As Lulu only makes modifications to the OTU table, the following python3 script can be run to filter the fasta file too.
+
+LULU only makes modifications to the OTU table, so we can run the following python3 script to remove the matching OTUs from the fasta file too. This script is written by Anders Lanzén.
 ``` python
 #!/usr/bin/env python
 
@@ -227,8 +235,7 @@ fa.close()
 ```
 
 ### Taxonomic assignments
-Finally, we can give a taxonomic assignment to the sequences that we have. For this we use the [Crest4](https://github.com/xapple/crest4) software that uses a last common ancestor algorithm. Assignments are given based on a modified SILVA138 database.
+Finally, we want to give a taxonomic assignment to the sequences that we have. For this we use the [Crest4](https://github.com/xapple/crest4) software that uses a last common ancestor algorithm. Assignments are given based on a modified SILVA138 database.
 ``` bash
 crest4 -f Otus_curated.fasta
 ```
-
