@@ -1,22 +1,21 @@
 # Sequence processing pipeline
 Here is a summary of the pipeline used to process the sequences. The pipeline is based on the ["alternative vsearch pipeline"](https://github.com/torognes/vsearch/wiki/Alternative-VSEARCH-pipeline) proposed by Torbjørn Rognes.
 
-First, the samples are being processed separately, before pooling
+First, the samples are being processed separately, before pooling after the first dereplication (step 5). So each step prior to this is run through a for loop that iterates over all files. 
 
-
-### Removal of the forward primers.
-When we receive our sequences back, they are already demultiplexed, meaning that each sample has its own fastq file, and the adaptors and barcodes are already removed. However, the forward primer is still present. It is accepted that this part should be removed. Indeed, it does not contain any phylogenic information as all sequences are same for this part. We use the cutadapt tool. 
+### 1. Removal of the forward primers.
+When we receive our sequences back, they are already demultiplexed, meaning that each sample has its own fastq file, and the adaptors and barcodes are already removed. However, the forward primer is still present. We want to remove it, as it does not contain any phylogenic information. We use the cutadapt tool. 
 ```bash
-cutadapt -j 3 -g CAGCMGCCGCGGTAA --no-indels --discard-untrimmed -o $s.noprimers.fastq $f
+cutadapt -j 10 -g CAGCMGCCGCGGTAA --no-indels --discard-untrimmed -o $s.noprimers.fastq $f
 ```
--  `-j`: Run the command over 3 CPU.
-- `-g `: The primer sequence to be removed.
-- `--no-indels`:  We do not allow for insertion or deletion in the primer sequence, aka we want to find exactly the good sequence.
+-  `-j`: Run the command over 10 CPU.
+- `-g `: The primer sequence to be removed. This primer is the 519F, but for some of the files the sequenced used was the 515.
+- `--no-indels`:  We do not allow for insertion or deletion in the primer sequence, ie. we want to find exactly the good sequence.
 - `--discard-untrimmed`: Throw away the whole sequence if the primer is not found in it.
 - `-o`: Name of the output.
 - `$f`:  This is the input file.
 
-### Trim at 220bp
+### 2. Trim at 220bp
 The sequences that we get back from sequencing are decreasing in quality towards the end. This means the certainty of a given base pair becomes lower, and there are more errors. To use only the certain part of each sequence, we discard the end of them. We choose to trim at 220bp here. This is arbitrary, but decided after observing the quality of our sequences in a tool like FastQC. To trim our sequences, we use a command within the `vsearch` software. At the same time this will remove our sequences shorter than 220bp.
 ```bash
 vsearch --fastq_filter $f \
