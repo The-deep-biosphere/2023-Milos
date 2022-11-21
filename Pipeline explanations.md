@@ -234,7 +234,7 @@ for line in fa:
 fa.close()
 ```
 
-### Taxonomic assignments
+### 13. Taxonomic assignments
 Finally, we want to give a taxonomic assignment to the sequences that we have. For this we use the [Crest4](https://github.com/xapple/crest4) software that uses a last common ancestor algorithm. Assignments are given based on a modified SILVA138 database.
 ``` bash
 crest4 -f Otus_curated.fasta
