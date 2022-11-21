@@ -3,5 +3,8 @@ Sven Le Moine Bauer, Guang-Sin Lu, Steven Goulaouic, Valentine Puzenat, Anders S
 
 The repository contains the integrality of the scripts needed to process the data presented in the aforementioned article.
 
+In order, the data is going through the following processing:
+- The processing of the sequences and picking of OTUs [[
+
 
 ==THIS DEPOSITORY IS NOT COMPLETE==
