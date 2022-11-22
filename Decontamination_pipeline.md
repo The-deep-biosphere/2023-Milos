@@ -39,7 +39,7 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # Sets the directory
 ```
 
 Now we can import the data. They should be in the same directory as the
-script.
+script. The files can be found on the Github.
 
 ``` r
 OTUtable <- read.csv("Otutab.sorted.tsv", row.names=1, sep = "\t")
@@ -174,7 +174,9 @@ Here we use only the frequency approach of the
 package, because we do not have enough blanks for the prevalence
 approach. Also, only the cardhynal dataset is used as we do not have
 qPCR data for the Saganaki dataset. Nevertheless, OTUs considered as
-contaminants were removed from both entire dataset.
+contaminants were removed from both entire dataset. We usedd the sum of
+archaeal and bacterial 16S qPCR measurement as our quantitative
+information for each sample.
 
 ``` r
 Milos_Cardhynal <- subset_samples(Milos_BA, Dataset=="Cardhynal") #Subset the dataset to only the Cardhynal dataset.
@@ -650,3 +652,6 @@ also ran some PCA on the non-decontaminated dataset, the
 without bothering about the outcome) and the “smart-decontaminated”
 dataset (the one produced here), and the results looks very similar
 between all PCA plot :)
+
+The OTU table and the taxonomy table where then exported from the
+phyloseq object to be used in downstream analysis.
