@@ -13,7 +13,7 @@ In order, the following links will bring you to:
 - [The processing of the sequences and picking of OTUs.](Pipeline%20explanations.md)
 - [The decontamination protocol for all OTUs](Decontamination_pipeline.md).
 - The statistical analysis: 
-  - The CoDA analysis (Figures 2A, 2B, 5, Supplementary material 5)
+  - [The CoDA analysis (Figures 2A, 2B, 5, Supplementary material 5)](CoDA_analysis.md)
   - The qPCR analysis (Figure 2D, 3)
   - The barplots (Figure 4, Supplementary material 7)
   - The Shannon diversity analysis (Figure 2C)
