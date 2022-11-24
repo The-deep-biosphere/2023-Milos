@@ -16,7 +16,7 @@ In order, the following links will bring you to:
   - [The CoDA analysis (Figures 2A, 2B, 5, Supplementary material 5)](CoDA_analysis.md)
   - [The qPCR analysis (Figure 2D, 3)](qPCR_analysis.md)
   - The barplots (Figure 4, Supplementary material 7)
-  - The Shannon diversity analysis (Figure 2C)
+  - [The Shannon diversity analysis (Figure 2C)](Shannon_analysis.md)
 
 
 ==THIS DEPOSITORY IS NOT COMPLETE==
