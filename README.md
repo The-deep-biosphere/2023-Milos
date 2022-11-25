@@ -7,9 +7,9 @@ Sven Le Moine Bauer, Guang-Sin Lu, Steven Goulaouic, Valentine Puzenat, Anders S
 | *Intense hydrothermal degassing in Paleochori Bay. Picture: Anders Schouw* |
 
 
-The repository contains the integrality of the scripts needed to process the data presented in the aforementioned article. Note that the authors are in no case Unix/R professionals, and the code can certainly be written in a more idiomatic way. Do not hesitate to reach out for further help. 
+This repository contains the integrality of the scripts and files needed to reproduce the data analysis presented in the aforementioned article. Note that the authors are in no case Unix/R professionals, and the code can certainly be written in a more idiomatic way. Do not hesitate to reach out for further help. 
 
-In order, the following links will bring you to:
+The following links will bring you to:
 - [The processing of the sequences and picking of OTUs](Pipeline%20explanations.md)
 - [The decontamination protocol for all OTUs](Decontamination_pipeline.md)
 - The statistical analysis: 
@@ -18,5 +18,12 @@ In order, the following links will bring you to:
   - The barplots (Figure 4, Supplementary material 7)
   - [The Shannon diversity analysis (Figure 2C)](Shannon_analysis.md)
 
+The following files are also given:
+- [Metadata.csv](Metadata.csv): The context information to all samples taken.
+- [Otutab.sorted.tsv](Otutab.sorted.tsv): The OTU table produced by the sequence processing pipeline, prior to decontamination.
+- [assignments.txt](assignments.txt): The taxonomy information assigned by CREST4, prior to decontamination.
+- [otutab_decontam.csv](otutab_decontam.csv): The OTU table post decontamination, used in the statistical analysis.
+- [tax_decontam.csv](tax_decontam.csv): The taxonomy information post decontamination, used in the statistical analysis.
+- [Otus_decontam.fasta](Otus_decontam.fasta): Centroids of the OTUs after decontamination. Not used in any script presented here.
 
 ==THIS DEPOSITORY IS NOT COMPLETE==
