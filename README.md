@@ -26,4 +26,3 @@ The following files are also given:
 - [tax_decontam.csv](tax_decontam.csv): The taxonomy information post decontamination, used in the statistical analysis.
 - [Otus_decontam.fasta](Otus_decontam.fasta): Centroids of the OTUs after decontamination. Not used in any script presented here.
 
-==THIS DEPOSITORY IS NOT COMPLETE==
