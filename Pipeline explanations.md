@@ -17,7 +17,7 @@ When we receive our sequences back, they are already demultiplexed, meaning that
 cutadapt -j 10 -g CAGCMGCCGCGGTAA --no-indels --discard-untrimmed -o $s.noprimers.fastq $f
 ```
 -  `-j`: Run the command over 10 CPU.
-- `-g `: The primer sequence to be removed. This primer is the 519F, but for some of the files the sequenced used was the 515.
+- `-g `: The primer sequence to be removed. This primer is the 519F, but for some of the files the sequenced used was the 515F.
 - `--no-indels`:  We do not allow for insertion or deletion in the primer sequence, ie. we want to find exactly the good sequence.
 - `--discard-untrimmed`: Throw away the whole sequence if the primer is not found in it.
 - `-o`: Name of the output.
