@@ -240,4 +240,4 @@ Finally, we want to give a taxonomic assignment to the sequences that we have. F
 crest4 -f Otus_curated.fasta
 ```
 
-Voila! The files a renow ready to be processed in the decontamination pipeline.
+Voila! The sequences are now ready to be processed in the decontamination pipeline.
