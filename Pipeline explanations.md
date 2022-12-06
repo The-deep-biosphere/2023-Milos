@@ -32,12 +32,12 @@ vsearch --fastq_filter $f \
 	--fastqout $s.trimmed.fastq
 ```
 - `--fastq_filter`: Name of the input fastq file to be filtered.
-- `--fastq_maxns`: Discard sequences with more than zero Ns. N's are unknown base pairs.
+- `--fastq_maxns`: Discard sequences with some Ns. N's are unknown base pairs.
 - `--fastq_trunclen`: Trim the sequences at 220bp. Throw away the shorter ones.
 - `--fastqout`: The name of the output file.
 
 ### 3. Quality filtering
-Fastq files contains both the sequences and the quality information related to each base pair. There are many ways to filter your sequences based on the quality. Here we use the max expected error principle, setting it to 2 for the Ion Torrent files, and 1 for the Illumina files. That means the quality of our sequences allow us to expect no more than 2 (or 1) errors in each sequence. Considering that we will later cluster our sequence at 97% similarity, 2 errors over 220bp should not make a major difference. Again, we use vsearch.
+Fastq files contain both the sequences and the quality information related to each base pair. There are many ways to filter your sequences based on the quality. Here we use the max expected error principle, setting it to 2 for the Ion Torrent files, and 1 for the Illumina files. That means the quality of our sequences allow us to expect no more than 2 (or 1) errors in each sequence. Considering that we will later cluster our sequence at 97% similarity, 2 errors over 220bp should not make a major difference. Again, we use vsearch.
 ```bash
 vsearch --fastq_filter $f \
 	--relabel $s. \
