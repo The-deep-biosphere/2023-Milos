@@ -8,7 +8,7 @@ The following software/packages are needed to run the pipeline:
 - [vsearch](https://github.com/torognes/vsearch)
 - [blastn](https://www.ncbi.nlm.nih.gov/books/NBK569861/)
 - [LULU](https://github.com/tobiasgf/lulu)
-- [CREST4](https://github.com/tobiasgf/lulu)
+- [CREST4](https://github.com/xapple/crest4)
 - You will also need a copy of the SILVA 138 nr database if you want to run the chimera check against it.
 
 ### 1. Removal of the forward primers.
