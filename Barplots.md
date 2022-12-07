@@ -66,10 +66,10 @@ The first thing to do is to agglomerate the taxa at the phylum level.
 Milos_phylum <- tax_glom(Milos, taxrank = "Phylum")
 ```
 
-Then we want to select only the most relatively abundant taxa to plot,
-otherwise it would impossible to see anything on the figure. Here I
-decide (after looking into the data) to group together any phylum that
-is not making 10% of the community in any sample.
+Then we want to select only the relatively most abundant taxa to plot,
+otherwise it would be impossible to see anything on the figure. Here I
+decide (after looking into the data) to group together all phyla that
+are not making 10% of the community in any sample.
 
 ``` r
 # To do this we get out of phyloseq
@@ -85,58 +85,34 @@ phylum_others <- phylum_max[phylum_max$max < 10,]$Phylum
 phylum_others_OTU <- row.names(tax_table(Milos_phylum))[apply(tax_table(Milos_phylum), 1, function(u) any(u %in% phylum_others))]
 # And then merging these taxa in the phyloseq object
 Milos_phylum <- merge_taxa(Milos_phylum, phylum_others_OTU)# Back to phyloseq, merge the OTUs listed before.
-tax_table(Milos_phylum)
+tax_table(Milos_phylum)[,c(1:2)]
 ```
 
-    ## Taxonomy Table:     [23 taxa by 7 taxonomic ranks]:
-    ##         Domain     Phylum                          Class Order Family Genus
-    ## OTU_1   "Archaea"  "Geothermarchaeota"             NA    NA    NA     NA   
-    ## OTU_3   "Bacteria" "Campylobacterota"              NA    NA    NA     NA   
-    ## OTU_4   "Archaea"  "Crenarchaeota"                 NA    NA    NA     NA   
-    ## OTU_11  "Bacteria" "Bacteroidota"                  NA    NA    NA     NA   
-    ## OTU_13  "Bacteria" "Thermosulfidibacterota"        NA    NA    NA     NA   
-    ## OTU_16  "Archaea"  "Thermoplasmatota"              NA    NA    NA     NA   
-    ## OTU_20  "Bacteria" "Proteobacteria"                NA    NA    NA     NA   
-    ## OTU_25  "Bacteria" "Acetothermia"                  NA    NA    NA     NA   
-    ## OTU_26  "Bacteria" "Desulfobacterota"              NA    NA    NA     NA   
-    ## OTU_30  "Bacteria" "Firmicutes"                    NA    NA    NA     NA   
-    ## OTU_32  "Archaea"  "Bathyarchaeota"                NA    NA    NA     NA   
-    ## OTU_33  "Bacteria" "Sva0485"                       NA    NA    NA     NA   
-    ## OTU_35  "Bacteria" "Calditrichota"                 NA    NA    NA     NA   
-    ## OTU_39  "Bacteria" "Acidobacteriota"               NA    NA    NA     NA   
-    ## OTU_46  "Bacteria" "Chloroflexi"                   NA    NA    NA     NA   
-    ## OTU_53  "Archaea"  "Nanoarchaeota"                 NA    NA    NA     NA   
-    ## OTU_60  "Bacteria" "Unclassified_Bacteria"         NA    NA    NA     NA   
-    ## OTU_72  "Bacteria" "Latescibacterota"              NA    NA    NA     NA   
-    ## OTU_84  "Bacteria" "Planctomycetota"               NA    NA    NA     NA   
-    ## OTU_133 NA         NA                              NA    NA    NA     NA   
-    ## OTU_166 "Bacteria" "Marinimicrobia (SAR406 clade)" NA    NA    NA     NA   
-    ## OTU_192 "Bacteria" "Thermotogota"                  NA    NA    NA     NA   
-    ## OTU_316 "Bacteria" "Actinobacteriota"              NA    NA    NA     NA   
-    ##         Species
-    ## OTU_1   NA     
-    ## OTU_3   NA     
-    ## OTU_4   NA     
-    ## OTU_11  NA     
-    ## OTU_13  NA     
-    ## OTU_16  NA     
-    ## OTU_20  NA     
-    ## OTU_25  NA     
-    ## OTU_26  NA     
-    ## OTU_30  NA     
-    ## OTU_32  NA     
-    ## OTU_33  NA     
-    ## OTU_35  NA     
-    ## OTU_39  NA     
-    ## OTU_46  NA     
-    ## OTU_53  NA     
-    ## OTU_60  NA     
-    ## OTU_72  NA     
-    ## OTU_84  NA     
-    ## OTU_133 NA     
-    ## OTU_166 NA     
-    ## OTU_192 NA     
-    ## OTU_316 NA
+    ## Taxonomy Table:     [23 taxa by 2 taxonomic ranks]:
+    ##         Domain     Phylum                         
+    ## OTU_1   "Archaea"  "Geothermarchaeota"            
+    ## OTU_3   "Bacteria" "Campylobacterota"             
+    ## OTU_4   "Archaea"  "Crenarchaeota"                
+    ## OTU_11  "Bacteria" "Bacteroidota"                 
+    ## OTU_13  "Bacteria" "Thermosulfidibacterota"       
+    ## OTU_16  "Archaea"  "Thermoplasmatota"             
+    ## OTU_20  "Bacteria" "Proteobacteria"               
+    ## OTU_25  "Bacteria" "Acetothermia"                 
+    ## OTU_26  "Bacteria" "Desulfobacterota"             
+    ## OTU_30  "Bacteria" "Firmicutes"                   
+    ## OTU_32  "Archaea"  "Bathyarchaeota"               
+    ## OTU_33  "Bacteria" "Sva0485"                      
+    ## OTU_35  "Bacteria" "Calditrichota"                
+    ## OTU_39  "Bacteria" "Acidobacteriota"              
+    ## OTU_46  "Bacteria" "Chloroflexi"                  
+    ## OTU_53  "Archaea"  "Nanoarchaeota"                
+    ## OTU_60  "Bacteria" "Unclassified_Bacteria"        
+    ## OTU_72  "Bacteria" "Latescibacterota"             
+    ## OTU_84  "Bacteria" "Planctomycetota"              
+    ## OTU_133 NA         NA                             
+    ## OTU_166 "Bacteria" "Marinimicrobia (SAR406 clade)"
+    ## OTU_192 "Bacteria" "Thermotogota"                 
+    ## OTU_316 "Bacteria" "Actinobacteriota"
 
 This is still a lot of phyla, but it is difficult to reduce more with so
 many heterogeneous samples. Now we can polish the data for the plot.
