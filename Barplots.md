@@ -53,6 +53,9 @@ TAX = tax_table(taxtable)
 samples = sample_data(Metatable)
 Milos <- phyloseq(OTU, TAX, samples)
 
+# I also wanted to change the "_" for some "-" in the sample names, as it looks better.
+sample_names(Milos) <- gsub("_", "-", sample_names(Milos))
+
 # Remove undesired samples.
 to_remove <- c("TZF", "WMF", "C25_0", "C26_0", "blank")
 Milos <- prune_samples(!(sample_names(Milos) %in% to_remove), Milos)
@@ -133,8 +136,8 @@ order_barplot
 ```
 
     ##  [1] "Thermotogota"                  "Marinimicrobia (SAR406 clade)"
-    ##  [3] "Sva0485"                       "Nanoarchaeota"                
-    ##  [5] "Geothermarchaeota"             "Thermosulfidibacterota"       
+    ##  [3] "Sva0485"                       "Geothermarchaeota"            
+    ##  [5] "Nanoarchaeota"                 "Thermosulfidibacterota"       
     ##  [7] "Firmicutes"                    "Thermoplasmatota"             
     ##  [9] "Bathyarchaeota"                "Actinobacteriota"             
     ## [11] "Crenarchaeota"                 "Latescibacterota"             
@@ -153,9 +156,6 @@ phylum_distribution <- phylum_distribution[order(phylum_distribution$Core, as.nu
 phylum_distribution$Sample <- factor(phylum_distribution$Sample, levels = rev(unique(phylum_distribution$Sample)))
 phylum_distribution$Phylum <- factor(phylum_distribution$Phylum, levels = order_barplot)
 phylum_distribution$Core = factor(phylum_distribution$Core, levels=c("C13", "C14", "C15", "C17", "C18","BG", "SG", "C20", "C24", "TZ","C25", "C16","C19","C21","C22","C23", "C26", "WM", "C27","C28","MAT", "SSW"))
-
-# I also wanted to replace the underscore by a dash as it looks better.
-phylum_distribution$Sample <- gsub('_', '-', phylum_distribution$Sample)
 
 #The colors for the taxa.
 colors <- c(sample(mako(17)[]), rocket(20)[c(4,7,10,15,20)], "grey")
