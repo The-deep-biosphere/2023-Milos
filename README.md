@@ -15,7 +15,7 @@ The following links will bring you to:
 - The statistical analysis: 
   - [The CoDA analysis (Figures 2A, 2B, 5, Supplementary material 5)](CoDA_analysis.md)
   - [The qPCR analysis (Figure 2D, 3)](qPCR_analysis.md)
-  - The barplots (Figure 4, Supplementary material 7)
+  - [The barplots (Figure 4, Supplementary material 7)](Barplots.md)
   - [The Shannon diversity analysis (Figure 2C)](Shannon_analysis.md)
 
 The following files are also given:
@@ -26,4 +26,3 @@ The following files are also given:
 - [tax_decontam.csv](tax_decontam.csv): The taxonomy information post decontamination, used in the statistical analysis.
 - [Otus_decontam.fasta](Otus_decontam.fasta): Centroids of the OTUs after decontamination. Not used in any script presented here.
 
-==THIS DEPOSITORY IS NOT COMPLETE==

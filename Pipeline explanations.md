@@ -8,7 +8,7 @@ The following software/packages are needed to run the pipeline:
 - [vsearch](https://github.com/torognes/vsearch)
 - [blastn](https://www.ncbi.nlm.nih.gov/books/NBK569861/)
 - [LULU](https://github.com/tobiasgf/lulu)
-- [CREST4](https://github.com/tobiasgf/lulu)
+- [CREST4](https://github.com/xapple/crest4)
 - You will also need a copy of the SILVA 138 nr database if you want to run the chimera check against it.
 
 ### 1. Removal of the forward primers.
@@ -17,7 +17,7 @@ When we receive our sequences back, they are already demultiplexed, meaning that
 cutadapt -j 10 -g CAGCMGCCGCGGTAA --no-indels --discard-untrimmed -o $s.noprimers.fastq $f
 ```
 -  `-j`: Run the command over 10 CPU.
-- `-g `: The primer sequence to be removed. This primer is the 519F, but for some of the files the sequenced used was the 515.
+- `-g `: The primer sequence to be removed. This primer is the 519F, but for some of the files the sequenced used was the 515F.
 - `--no-indels`:  We do not allow for insertion or deletion in the primer sequence, ie. we want to find exactly the good sequence.
 - `--discard-untrimmed`: Throw away the whole sequence if the primer is not found in it.
 - `-o`: Name of the output.
@@ -32,12 +32,12 @@ vsearch --fastq_filter $f \
 	--fastqout $s.trimmed.fastq
 ```
 - `--fastq_filter`: Name of the input fastq file to be filtered.
-- `--fastq_maxns`: Discard sequences with more than zero Ns. N's are unknown base pairs.
+- `--fastq_maxns`: Discard sequences with some Ns. N's are unknown base pairs.
 - `--fastq_trunclen`: Trim the sequences at 220bp. Throw away the shorter ones.
 - `--fastqout`: The name of the output file.
 
 ### 3. Quality filtering
-Fastq files contains both the sequences and the quality information related to each base pair. There are many ways to filter your sequences based on the quality. Here we use the max expected error principle, setting it to 2 for the Ion Torrent files, and 1 for the Illumina files. That means the quality of our sequences allow us to expect no more than 2 (or 1) errors in each sequence. Considering that we will later cluster our sequence at 97% similarity, 2 errors over 220bp should not make a major difference. Again, we use vsearch.
+Fastq files contain both the sequences and the quality information related to each base pair. There are many ways to filter your sequences based on the quality. Here we use the max expected error principle, setting it to 2 for the Ion Torrent files, and 1 for the Illumina files. That means the quality of our sequences allow us to expect no more than 2 (or 1) errors in each sequence. Considering that we will later cluster our sequence at 97% similarity, 2 errors over 220bp should not make a major difference. Again, we use vsearch.
 ```bash
 vsearch --fastq_filter $f \
 	--relabel $s. \
@@ -240,4 +240,4 @@ Finally, we want to give a taxonomic assignment to the sequences that we have. F
 crest4 -f Otus_curated.fasta
 ```
 
-Voila! The files a renow ready to be processed in the decontamination pipeline.
+Voila! The sequences are now ready to be processed in the decontamination pipeline.
