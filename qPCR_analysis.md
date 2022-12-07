@@ -1,4 +1,4 @@
-qPCR_analysis
+The qPCR analysis
 ================
 Sven Le Moine Bauer
 2022-11-24
@@ -42,7 +42,7 @@ qPCRtable <- qPCRtable %>% mutate(Seafloor_type2=Seafloor_type)
 
 ## The 16S total abundance per seafloor type plot (Figure 2D)
 
-The total 16S is considered to be the sum of bacerial and archaeal 16S.
+The total 16S is considered to be the sum of bacterial and archaeal 16S.
 The plot uses geom_jitter grouped per seafloor types.
 
 ``` r
@@ -68,11 +68,10 @@ ggplot(qPCRtable, aes(x=Seafloor_type, y=Uni_avg)) +
 
 ## The plots of various gene abundances (Fig 3)
 
-The code to make this spaghetti plot has been found there:
-<https://www.data-to-viz.com/caveat/spaghetti.html>. Here I show only
-the code for the bacterial 16S gene, but the code can be adapted to the
-other genes just by changing the variable plotted. As seen the code does
-not specify the dimensions of the output window…
+The code to make this spaghetti plot has been found
+[here](https://www.data-to-viz.com/caveat/spaghetti.html). Here I show
+only the code for the bacterial 16S gene, but it can be adapted to the
+other genes just by changing the variable plotted.
 
 ``` r
 ggthemr("fresh")
