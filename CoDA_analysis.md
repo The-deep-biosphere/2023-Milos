@@ -1,4 +1,4 @@
-CoDA_analysis
+The CoDA analysis
 ================
 Sven Le Moine Bauer
 2022-11-22
@@ -6,7 +6,7 @@ Sven Le Moine Bauer
 ## Introduction
 
 In this part of the analysis we will go through the code used in the
-analysis of the microbial composition:
+analysis of the microbial compositions:
 
 -   The CoDA-PCA biplots.
 -   The balances.
@@ -33,7 +33,7 @@ library(ggtext)
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 ```
 
-Two functions also need to be loaded (mBiplext and geom_link3).
+The two following functions are also needed (mBiplext and geom_link3).
 
 ``` r
 ############Function GEOM_LINK3 ###############
@@ -362,8 +362,8 @@ samples = sample_data(Metatable)
 Milos <- phyloseq(OTU, TAX, samples)
 ```
 
-In this analysis I do not want to include anything that does not have a
-depth. ie. Mats, seawater and fluids samples.
+We first remove the samples that are not sediments, i.e. mats, seawater
+and fluids samples.
 
 ``` r
 to_remove <- c("MAT1", "MAT2", "SSW", "TZF", "WMF", "C25_0", "C26_0", "blank")
@@ -550,13 +550,14 @@ It looks a bit off in markdown, but you get the idea!
 ## Balances
 
 Now we will make the balances. I will only show how to make the balance
-between on one side the black and yellow seafloor types, and the rest on
-the other side. To compute the other balances, one can simply use
-another ‘cat\_’ variable from the metadata file. First we want to select
-only the most important taxa, relatively speaking. Having too many taxa
-adds some noise and is also demanding for the computer. Here, we select
-only the families that make at least 1% of the composition in at least 1
-sample. So let s start by getting an OTU table with relative abundance.
+between on one side the black and yellow seafloor types, and on the
+other side all other seafloor types (Fig 5E). To compute the other
+balances, one can simply use another ‘cat\_’ variable from the metadata
+file. First we want to select only the most important taxa, relatively
+speaking. Having too many taxa adds some noise and is also demanding for
+the computer. Here, we select only the families that make at least 1% of
+the composition in at least 1 sample. So let start by getting an OTU
+table with relative abundance.
 
 ``` r
 OTU_perc <- prop.table(otu_table(Milos_family), margin = 2)*100
@@ -578,7 +579,7 @@ family_less1 <- family_max[family_max$max < 1,]$Family #List of the family that 
 A small problem now is that afterwards we want to use the absolute
 abundance data, and we have now a list of names from the relative
 abundance table. Seems that R does not keep the same OTU name when
-pooling. So we will now look at the matching OTUs in the Milos_damily
+pooling. So we will now look at the matching OTUs in the Milos_family
 taxa_names().
 
 ``` r
@@ -590,7 +591,6 @@ Milos_family1 = prune_taxa(TaxaToKeep, Milos_family) # Select the 166 taxa.
 Now there is a bit of preparation to be able to use the data in selbal.
 
 ``` r
-# Prepare data for coda4microbiome
 OTUtable <- as.data.frame(t(otu_table(Milos_family1))) # Get the OTU table, transposed
 taxtable <- as.data.frame(tax_table(Milos_family1)) # Get the taxonomy table
 Metatable <- as.data.frame(sample_data(Milos_family1)) # Get the metadata
