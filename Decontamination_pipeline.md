@@ -16,7 +16,7 @@ The pipeline goes through several steps of decontamination:
 
 -   Removal of OTUs not assigned to Bacteria or Archaea.
 -   The frequency approach from the decontam package.
--   Removal of a list of knoan contaminants.
+-   Removal of a list of known contaminants.
 -   Removal of OTUs present in the blank.
 -   Removal of OTUs below a certain abundance threshold.
 
@@ -38,8 +38,8 @@ library(decontam) # Decontamination package
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # Sets the directory to the place the script is saved.
 ```
 
-Now we can import the data. They should be in the same directory as the
-script. The files can be found on the Github.
+Now we can import the data. The files should be in the same directory as
+the script. They can be found on the Github.
 
 ``` r
 OTUtable <- read.csv("Otutab.sorted.tsv", row.names=1, sep = "\t")
@@ -48,7 +48,7 @@ taxtable <- read.csv("assignments.txt", row.names = 1, sep = "\t")
 ```
 
 The taxonomic output of CREST4 keeps empty cells when there is no
-taxonomic assignemt. This may be problematic when pooling at higher
+taxonomic assignment. This will be problematic when pooling at higher
 taxonomic levels as all the unassigned taxa may be pooled together
 regardless of their higher taxonomy. Therefore we will replace all empty
 cells with Unassigned_XXX. XXX being the last assigned level.
@@ -174,7 +174,7 @@ Here we use only the frequency approach of the
 package, because we do not have enough blanks for the prevalence
 approach. Also, only the cardhynal dataset is used as we do not have
 qPCR data for the Saganaki dataset. Nevertheless, OTUs considered as
-contaminants were removed from both entire dataset. We usedd the sum of
+contaminants were removed from both datasets. We used the sum of
 archaeal and bacterial 16S qPCR measurement as our quantitative
 information for each sample.
 
@@ -195,7 +195,7 @@ Milos_decontam <- prune_taxa(List_decontam, Milos_BA)
 Milos_rel_contam  <- prune_taxa(List_contam, Milos_rel_BA)
 ```
 
-# Let’s have a look at the impact on each sample, using the count table.
+Let’s have a look at the impact on each sample, using the count table.
 
 ``` r
 counts$percDecontam <- sample_sums(Milos_decontam)*100/counts$sample_sums.Milos.
@@ -212,48 +212,10 @@ contaminants.
 ``` r
 Milos_rel_contam  <- prune_taxa(List_contam, Milos_rel_BA) # Select only the OTUs that are considered as contaminants
 Milos_rel_contam_top <- prune_taxa(taxa_sums(Milos_rel_contam) > 0.05, Milos_rel_contam)# Keep the OTUs that are doing at least 5% cumulative relative abundance.
-tax_table(Milos_rel_contam_top)
+tax_table(Milos_rel_contam_top)[,6]
 ```
 
-    ## Taxonomy Table:     [18 taxa by 7 taxonomic ranks]:
-    ##         Domain     Phylum                  Class                           
-    ## OTU_1   "Archaea"  "Geothermarchaeota"     "Unclassified_Geothermarchaeota"
-    ## OTU_25  "Bacteria" "Acetothermia"          "Acetothermiia"                 
-    ## OTU_26  "Bacteria" "Desulfobacterota"      "Desulfobacteria"               
-    ## OTU_32  "Archaea"  "Bathyarchaeota"        "Unclassified_Bathyarchaeota"   
-    ## OTU_39  "Bacteria" "Acidobacteriota"       "Aminicenantia"                 
-    ## OTU_65  "Bacteria" "Proteobacteria"        "Alphaproteobacteria"           
-    ## OTU_72  "Bacteria" "Latescibacterota"      "Latescibacteria"               
-    ## OTU_84  "Bacteria" "Planctomycetota"       "Planctomycetes"                
-    ## OTU_89  "Bacteria" "Bdellovibrionota"      "Oligoflexia"                   
-    ## OTU_100 "Bacteria" "Latescibacterota"      "Unclassified_Latescibacterota" 
-    ## OTU_103 "Bacteria" "Proteobacteria"        "Gammaproteobacteria"           
-    ## OTU_114 "Bacteria" "Desulfobacterota"      "Unclassified_Desulfobacterota" 
-    ## OTU_124 "Bacteria" "Proteobacteria"        "Alphaproteobacteria"           
-    ## OTU_131 "Bacteria" "LCP-89"                "Unclassified_LCP-89"           
-    ## OTU_153 "Bacteria" "Planctomycetota"       "Brocadiae"                     
-    ## OTU_223 "Bacteria" "Desulfobacterota"      "Desulfobulbia"                 
-    ## OTU_373 "Bacteria" "Planctomycetota"       "Planctomycetes"                
-    ## OTU_762 "Bacteria" "Unclassified_Bacteria" "Unclassified_Bacteria"         
-    ##         Order                            Family                          
-    ## OTU_1   "Unclassified_Geothermarchaeota" "Unclassified_Geothermarchaeota"
-    ## OTU_25  "Unclassified_Acetothermiia"     "Unclassified_Acetothermiia"    
-    ## OTU_26  "Desulfatiglandales"             "Desulfatiglandaceae"           
-    ## OTU_32  "Unclassified_Bathyarchaeota"    "Unclassified_Bathyarchaeota"   
-    ## OTU_39  "Aminicenantales"                "Unclassified_Aminicenantales"  
-    ## OTU_65  "Rhizobiales"                    "Xanthobacteraceae"             
-    ## OTU_72  "Latescibacterales"              "Unclassified_Latescibacterales"
-    ## OTU_84  "Pirellulales"                   "Pirellulaceae"                 
-    ## OTU_89  "0319-6G20"                      "Unclassified_0319-6G20"        
-    ## OTU_100 "Unclassified_Latescibacterota"  "Unclassified_Latescibacterota" 
-    ## OTU_103 "Pseudomonadales"                "Halieaceae"                    
-    ## OTU_114 "Unclassified_Desulfobacterota"  "Unclassified_Desulfobacterota" 
-    ## OTU_124 "Rhizobiales"                    "Beijerinckiaceae"              
-    ## OTU_131 "Unclassified_LCP-89"            "Unclassified_LCP-89"           
-    ## OTU_153 "SM23-32"                        "Unclassified_SM23-32"          
-    ## OTU_223 "Desulfobulbales"                "Desulfocapsaceae"              
-    ## OTU_373 "Pirellulales"                   "Pirellulaceae"                 
-    ## OTU_762 "Unclassified_Bacteria"          "Unclassified_Bacteria"         
+    ## Taxonomy Table:     [18 taxa by 1 taxonomic ranks]:
     ##         Genus                             
     ## OTU_1   "Unclassified_Geothermarchaeota"  
     ## OTU_25  "Unclassified_Acetothermiia"      
@@ -272,25 +234,6 @@ tax_table(Milos_rel_contam_top)
     ## OTU_153 "Unclassified_SM23-32"            
     ## OTU_223 "Unclassified_Desulfocapsaceae"   
     ## OTU_373 "Unclassified_Pirellulaceae"      
-    ## OTU_762 "Unclassified_Bacteria"           
-    ##         Species                                      
-    ## OTU_1   "Unclassified_Geothermarchaeota"             
-    ## OTU_25  "Unclassified_Acetothermiia"                 
-    ## OTU_26  "Unclassified_Desulfatiglandaceae"           
-    ## OTU_32  "Unclassified_Bathyarchaeota"                
-    ## OTU_39  "Unclassified_Aminicenantales"               
-    ## OTU_65  "Unclassified_Xanthobacteraceae"             
-    ## OTU_72  "Unclassified_Latescibacterales"             
-    ## OTU_84  "Unclassified_Pirellulaceae"                 
-    ## OTU_89  "Unclassified_0319-6G20"                     
-    ## OTU_100 "Unclassified_Latescibacterota"              
-    ## OTU_103 "Unclassified_OM60(NOR5) clade"              
-    ## OTU_114 "Unclassified_Desulfobacterota"              
-    ## OTU_124 "Unclassified_Methylobacterium-Methylorubrum"
-    ## OTU_131 "Unclassified_LCP-89"                        
-    ## OTU_153 "Unclassified_SM23-32"                       
-    ## OTU_223 "Unclassified_Desulfocapsaceae"              
-    ## OTU_373 "Unclassified_Pirellulaceae"                 
     ## OTU_762 "Unclassified_Bacteria"
 
 They do not really look like contaminants:
@@ -344,16 +287,16 @@ The problem observed here is likely inherent to the way the frequency
 approach from decontam works. It does a regression between relative
 abundance, and absolute abundance for each OTU, and then assumes that
 contaminants will likely have higher relative abundance in low biomass
-samples. While this could be true, it also poses problem when highly
+samples. While this could be true, it also poses a problem when highly
 heterogenous samples are being analysed. In our case, the very abundant
 thermophiles OTUs are likely mainly present in the hot and low biomass
 samples, while disappearing in our cold and high biomass background
 samples. For decontam, this is the pattern of a contaminant. After
 looking at these distributions and the taxonomy of these OTUs, I don’t
 feel like removing them. I will therefore keep these top contaminant
-OTUs in the dataset except for the Methylobacterium. I will also remove
-the others that were flagged. Even if they may not be contaminant, they
-anyway did not represent high relative abundances in our samples.
+OTUs in the dataset except for the Methylobacterium. The others that
+were flagged will still be removed, even if they may not be contaminant.
+They anyway did not represent high relative abundances in our samples.
 
 ``` r
 List_decontam_new <- c(rownames(contamdf.freq[contamdf.freq$contaminant == FALSE,]), taxa_names(Milos_rel_contam_top)) # Keep the top OTUs
@@ -452,7 +395,7 @@ tax_table(Milos_Eisen_rel_out)[c("OTU_127", "OTU_288", "OTU_301", "OTU_74", "OTU
 
 Not sure for all of them, but I think that geobacillus is not a surprise
 in such a hydrothermal environment. Let’s look more specifically at the
-distribution of this OTUs in the samples.
+distribution of these OTUs in the samples.
 
 ``` r
 OTUtable[c("OTU_127", "OTU_288", "OTU_301", "OTU_74", "OTU_127", "OTU_80") ,]
@@ -554,9 +497,9 @@ ggplot(Milos_Eisen_rel_blank_melt, aes(Sample, Abundance*100, color = OTU)) +
 
 ![](Decontamination_pipeline_files/figure-gfm/blank2-1.png)<!-- -->
 
-OTU 3 is insanely abundant in several samples, up to 50% of the reads.
-That does not look like a contaminant. Some others are also up to 10% in
-some samples. Let’s look at the taxonomy of these OTUs.
+OTU 3 is very abundant in several samples, up to 50% of the reads. That
+does not look like a contaminant. Some others are also up to 10% in some
+samples. Let’s look at the taxonomy of these OTUs.
 
 ``` r
 taxtable[rownames(taxtable) %in% OTUblank,6] 
@@ -600,13 +543,15 @@ will therefore not remove these OTUs.
 
 ## Remove OTUs below a certain abundance treshold
 
-This is based on bokulich 2012, but I had to decrease the treshold,
-because removing the OTUs not covering 0.005% of all seqs is far too
-high (here it would be any OTU that is not represented by at least 134
-reads). Therefore I only remove OTUs that are not represented by at
-least 10 sequences. While this is compositionaly not really correct, and
-some OTUs may be at a disadvantage here, I ll just close my eyes on this
-one… The consequences are probably minimal anyway.
+This is based on [bokulich
+2012](https://www.nature.com/articles/nmeth.2276), but I had to decrease
+the treshold, because removing the OTUs not covering 0.005% of all
+sequences as advised in the paper is far too high (here it would be any
+OTU that is not represented by at least 134 reads). Therefore I only
+remove OTUs that are not represented by at least 10 sequences. While
+this is compositionally not really correct, and some OTUs may be at a
+disadvantage here, I ll just close my eyes on this one… The consequences
+are probably minimal anyway.
 
 ``` r
 Milos_treshold <- prune_taxa(taxa_sums(Milos_Eisen)>10, Milos_Eisen)
@@ -626,9 +571,9 @@ ggplot(Counts_long, aes(x = variable, y = value, group = Sample, color = positio
 rm(counts, Counts_long, Milos_Eisen, Milos_rel_Eisen) # Some cleanup
 ```
 
-The impact does not seem too strong, around 5% of reads in a given
-sample max, and it nearly divides by 2 my dataset, simplifying it a lot.
-I ll keep it like that for downstream analysis.
+The impact does not seem too strong, around 5% of all reads in a given
+sample max, and it nearly divides by 2 my OTU dataset, simplifying it a
+lot. I will keep it like that for downstream analysis.
 
 ## Conclusions
 
@@ -638,7 +583,7 @@ decontamination plan.
 -   We removed OTUs not assigned to Archaea or Bacteria at the Domain
     level.
 -   We removed some OTUs through the decontam package, but kept the most
-    important flagged OTUs, as they did not feel like contaminants.
+    important flagged OTUs, as they did not looked like contaminants.
 -   We removed a list of known contaminants.
 -   We kept the OTUs that were in our blank, as they do not seem to be
     linked to external contaminations.
