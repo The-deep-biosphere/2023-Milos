@@ -192,7 +192,7 @@ table(contamdf.freq$contaminant) #How many contaminations?
 List_contam <- rownames(contamdf.freq[contamdf.freq$contaminant == TRUE,]) # Which OTUs are contaminants?
 List_decontam <- rownames(contamdf.freq[contamdf.freq$contaminant == FALSE,]) # Which OTUs are not contaminants?
 Milos_decontam <- prune_taxa(List_decontam, Milos_BA)
-Milos_rel_contam  <- prune_taxa(List_contam, Milos_rel_BA)
+Milos_rel_decontam  <- prune_taxa(List_decontam, Milos_rel_BA)
 ```
 
 Let’s have a look at the impact on each sample, using the count table.
